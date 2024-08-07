@@ -8,25 +8,17 @@
       integrity="sha384-2huaZvOR9iDzHqslqwpR87isEmrfxqyWOF7hr7BY6KG0+hVKLoEXMPUJw3ynWuhO"
       crossorigin="anonymous"
     ></script>
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css" />
     <title>Document</title>
   </head>
   <body>
-    <h1>Online Code Editor</h1>
+    <h1 class="title">Online Code Editor</h1>
 
-    <h2>Olnine Users : <span id="users-quantity">0</span></h2>
+    <h2 id="users-quantity">Olnine Users : 0</h2>
 
-    <script>
-      const socket = io("http://localhost:3000");
+    <textarea id="editor"> </textarea>
 
-      socket.on("user-join", (quantity) => {
-        console.log("user-join", quantity);
-        document.getElementById("users-quantity").innerText = quantity;
-      });
-
-      socket.on("user-leave", (quantity) => {
-        console.log("user-leave", quantity);
-        document.getElementById("users-quantity").innerText = quantity;
-      });
-    </script>
+    <script src="js/script.js"></script>
   </body>
 </html>

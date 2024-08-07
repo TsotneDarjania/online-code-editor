@@ -13,11 +13,16 @@ socketServer.on("connection", (socket) => {
   usersNumber++;
   console.log("A user connected");
 
-  socket.emit("user-join", usersNumber);
+  socketServer.emit("user-join", usersNumber);
+
+  // Listen for mouse move event
+  socket.on("mouse-move", (data) => {
+    socket.broadcast.emit("mouse-move", data);
+  });
 
   socket.on("disconnect", () => {
     usersNumber--;
-    socket.emit("user-leave", usersNumber);
+    socketServer.emit("user-leave", usersNumber);
 
     console.log("A user disconnected");
   });
@@ -26,6 +31,8 @@ socketServer.on("connection", (socket) => {
 app.set("view engine", "ejs");
 app.set("views", "views");
 
+//Config
+app.use(express.static("static"));
 app.use(pageRouter);
 
 export function startServer() {
