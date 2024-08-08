@@ -10,11 +10,6 @@ socket.on("user-join", (quantity) => {
   }
 });
 
-function createOnlineUserCursor() {
-  cursor = `<img id="onine_user_cursor" src="img/cursor.png" alt="cursor" class="cursor"/>`;
-  document.body.innerHTML += cursor;
-}
-
 socket.on("user-leave", (quantity) => {
   document.getElementById(
     "users-quantity"
@@ -30,6 +25,11 @@ window.addEventListener("mousemove", (data) => {
 function sendMousePosition(x, y) {
   const mousePositions = { x, y };
   socket.emit("mouse-move", mousePositions);
+}
+
+function createOnlineUserCursor() {
+  cursor = `<img id="onine_user_cursor" src="img/cursor.png" alt="cursor" class="cursor"/>`;
+  document.body.innerHTML += cursor;
 }
 
 socket.on("mouse-move", (data) => {
