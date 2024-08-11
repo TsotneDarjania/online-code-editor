@@ -1,44 +1,56 @@
 const socket = io("http://localhost:3000");
 
-socket.on("user-join", (quantity) => {
-  document.getElementById(
-    "users-quantity"
-  ).innerText = `Online Users : ${quantity} `;
+socket.on("user-join", handleUserJoin);
+socket.on("user-leave", updateUserCount);
+socket.on("mouse-move", handleMouseMove);
 
-  if (quantity > 1) {
+window.addEventListener("mousemove", handleMouseMovement);
+
+function handleUserJoin(quantity) {
+  updateUserCount(quantity);
+  if (quantity > 1 && !document.getElementById("online_user_cursor")) {
     createOnlineUserCursor();
   }
-});
+}
 
-socket.on("user-leave", (quantity) => {
+function updateUserCount(quantity) {
   document.getElementById(
     "users-quantity"
-  ).innerText = `Online Users : ${quantity} `;
-});
+  ).innerText = `Online Users: ${quantity}`;
+}
 
-window.addEventListener("mousemove", (data) => {
-  const { clientX, clientY } = data;
+function handleMouseMovement(event) {
+  const { clientX, clientY } = event;
+  const { innerWidth, innerHeight } = window;
 
-  sendMousePosition(clientX, clientY);
-});
+  const xPercent = (clientX / innerWidth) * 100;
+  const yPercent = (clientY / innerHeight) * 100;
+
+  sendMousePosition(xPercent, yPercent);
+}
 
 function sendMousePosition(x, y) {
-  const mousePositions = { x, y };
-  socket.emit("mouse-move", mousePositions);
+  socket.emit("mouse-move", { x, y });
 }
 
 function createOnlineUserCursor() {
-  cursor = `<img id="onine_user_cursor" src="img/cursor.png" alt="cursor" class="cursor"/>`;
-  document.body.innerHTML += cursor;
+  const cursorHtml = `<img id="online_user_cursor" src="img/cursor.png" alt="cursor" class="cursor"/>`;
+  document.body.insertAdjacentHTML("beforeend", cursorHtml);
 }
 
-socket.on("mouse-move", (data) => {
-  console.log("someone is moving mouse", data);
+function handleMouseMove(data) {
   onlineMouseMove(data.x, data.y);
-});
+}
 
-function onlineMouseMove(x, y) {
-  const cursor = document.getElementById("onine_user_cursor");
-  cursor.style.left = `${x}px`;
-  cursor.style.top = `${y}px`;
+function onlineMouseMove(xPercent, yPercent) {
+  const { innerWidth, innerHeight } = window;
+
+  const x = (xPercent / 100) * innerWidth;
+  const y = (yPercent / 100) * innerHeight;
+
+  const cursor = document.getElementById("online_user_cursor");
+  if (cursor) {
+    cursor.style.left = `${x}px`;
+    cursor.style.top = `${y}px`;
+  }
 }
